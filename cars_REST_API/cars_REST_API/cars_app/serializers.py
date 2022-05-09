@@ -1,5 +1,3 @@
-import datetime
-
 from rest_framework import serializers
 
 from cars_REST_API.cars_app.models import CarBrand, CarModel, UserCar
@@ -19,14 +17,9 @@ class CarModelSerializer(serializers.ModelSerializer):
         model = CarModel
         exclude = ('is_deleted', "deleted")
 
-    def create(self, validated_data):
-        return CarModel.objects.create(**validated_data)
-
 
 class UserCarSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserCar
-        fields = '__all__'
+        exclude = ('is_deleted', 'deleted')
 
-    def create(self, validated_data):
-        return UserCar.objects.create(**validated_data)

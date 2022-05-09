@@ -1,3 +1,7 @@
+from datetime import datetime, timedelta
+
+import jwt
+from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import User, PermissionsMixin
 from django.db import models
@@ -8,7 +12,13 @@ from cars_REST_API.accounts.managers import CustomManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
+
+    email = models.EmailField(
+        unique=True,
+        error_messages={
+            "unique": "A user with that username already exists."
+        }
+    )
 
     is_staff = models.BooleanField(
         "staff status",
@@ -27,6 +37,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomManager()
 
     USERNAME_FIELD = "email"
+
+    @property
+    def token(self):
+        token = jwt.encode({
+            'email': self.email,
+            "password": self.password,
+            'exp': datetime.utcnow() + timedelta(hours=24)
+        }, settings.SECRET_KEY, algorithm='HS256')
+        return token
 
 
 class ProfileModel(models.Model):

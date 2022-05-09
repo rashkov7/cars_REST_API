@@ -44,6 +44,7 @@ class CreatedAndDeletedFields(models.Model):
 
 class CarBrand(CreatedAndDeletedFields, SoftDelete):
 
+
     brand_name = models.CharField(max_length=30)
 
     def __str__(self):
